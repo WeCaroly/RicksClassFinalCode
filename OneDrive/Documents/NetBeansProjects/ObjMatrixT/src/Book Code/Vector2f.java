@@ -44,5 +44,5 @@ public class Vector2f {
 		y = (float) (x * Math.sin(rad) + y * Math.cos(rad));
 		x = tmp;
 	}
-
+     
 }
