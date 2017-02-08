@@ -20,7 +20,7 @@ public class VectorObject implements Drawable{
         Point location;
         Float scale;
         Color color;    
-        float rotation = 0.2f;
+        float rotation = 0.3f;
         //Added
         int widthScreen, heightScreen;
         int widthScreenNeg, heightScreenNeg;
@@ -34,9 +34,6 @@ public class VectorObject implements Drawable{
 				new Vector2f(0, 0) };
                 break;
             case 2: // hex
-                //a = 5
-                //b = 5
-                //c = 10
                 lines = new Vector2f[] { new Vector2f(0, 0), new Vector2f(0, 10),
 				new Vector2f(8, 16), new Vector2f(16, 10), 
                                 new Vector2f(16, 0), new Vector2f(8, -6) };
@@ -72,10 +69,6 @@ public class VectorObject implements Drawable{
        
     }
     
-
-//    public void updatePoint(Point point){
-//        this.point = point;
-//    }
     
     public void setScreen(int h, int w){
         heightScreen = h;
@@ -90,7 +83,6 @@ public class VectorObject implements Drawable{
     
     public void setLocation(Point location){
         this.location = location;
-        System.out.println(location);
     }
     
     public void setColor(Color color){
