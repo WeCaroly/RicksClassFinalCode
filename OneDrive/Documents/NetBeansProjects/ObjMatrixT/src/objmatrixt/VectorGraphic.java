@@ -7,6 +7,9 @@ package objmatrixt;
  */
 import static com.sun.glass.ui.Cursor.setVisible;
 import java.awt.*;
+import static java.awt.Color.GREEN;
+import static java.awt.Color.RED;
+import static java.awt.Color.YELLOW;
 import java.awt.event.*;
 import java.awt.image.*;
 import javagames.util.*;
@@ -20,6 +23,8 @@ public class VectorGraphic extends JFrame implements Runnable {
 
     private static final int SCREEN_W = 1280;
     private static final int SCREEN_H = 480;
+    private static final int SCREEN_W_HALF = 640;
+    private static final int SCREEN_H_HALF = 240;
     private FrameRate frameRate;
     private BufferStrategy bs;
     private volatile boolean running;
@@ -36,14 +41,15 @@ public class VectorGraphic extends JFrame implements Runnable {
 
     Canvas canvas;
     //
+   
     private float tx, ty;
     private float vx, vy;
     private float rot, rotStep;
-    private float scale, scaleStep;
+    private float scale = .1f;
     private float sx, sxStep;
     private float sy, syStep;
     private boolean doTranslate;
-    private boolean doRotate;
+    private boolean doRotateTri, doRotateHex;
     private boolean clockwise1;
     private boolean clockwise2;
 
@@ -121,16 +127,21 @@ public class VectorGraphic extends JFrame implements Runnable {
         frameRate = new FrameRate();
         frameRate.initialize();
               
-        shapeSq = new VectorObject(1);
+        shapeSq = new VectorObject(1,RED);
         doTranslate = true; //starts bounce
         
-        shapeTri = new VectorObject(2);
-        shapeHex = new VectorObject(3);
+        shapeTri = new VectorObject(2,GREEN);
+        shapeHex = new VectorObject(3,YELLOW);
 
-//       world = new Vector2f[shapeHex.objects.length];
-//        world = new Vector2f[shapeSq.objects.length];
-//        world = new Vector2f[shapeTri.objects.length];
+
+        shapeSq.setLocation(new Point(SCREEN_W_HALF,SCREEN_H_HALF));
+        shapeHex.setLocation(new Point(SCREEN_W_HALF,SCREEN_H_HALF));
+        shapeTri.setLocation(new Point(SCREEN_W_HALF,SCREEN_H_HALF));
         reset();
+        shapeSq.setScale(scale);
+        shapeHex.setScale(scale);
+        shapeTri.setScale(scale);
+        
     }
 
     private void reset() {
@@ -139,18 +150,18 @@ public class VectorGraphic extends JFrame implements Runnable {
         vx = vy = 2;
         rot = 0.0f;
         rotStep = (float) Math.toRadians(1.0);
-        scale = 1.0f;
-        scaleStep = 0.1f;
+        scale = 1.3f;
         sx = sy = 0.0f;
         sxStep = syStep = 0.01f;
-        doRotate = doTranslate = false;
+        doRotateTri = doRotateHex = false;
 
     }
 
     private void processInput() {
         keyboard.poll();
         mouse.poll();
-
+        int aroundObject; //addMath
+        
         if (canvas != null) {
             if (point.x + 25 < 0) {
                 point.x = canvas.getWidth() - 1;
@@ -164,58 +175,70 @@ public class VectorGraphic extends JFrame implements Runnable {
                 point.y = -25;
             }
         }
-
         //Tringle 
         shapeTri.updatePoint(point);
         if (mouse.buttonDownOnce(MouseEvent.BUTTON1)) {
-            doRotate = !doRotate; //tri roate clockwise
+            doRotateTri = !doRotateTri; //tri roate clockwise
             clockwise1 = true;
         }
-        if (mouse.buttonDown(MouseEvent.BUTTON1)) {
+        else if (mouse.buttonDown(MouseEvent.BUTTON1)) {
             //tri roate clockwise
             clockwise1 = true;
         }
         else {
-            doRotate = false;
+            doRotateTri = false;
         }
         if (mouse.buttonDownOnce(MouseEvent.BUTTON2)) {
-            doRotate = !doRotate; //tri roate counter
+            doRotateHex = !doRotateHex; //tri roate counter
             clockwise1 = false;
         }
-        if (mouse.buttonDown(MouseEvent.BUTTON2)) {
+        else  if (mouse.buttonDown(MouseEvent.BUTTON2)) {
            //tri roate counter
             clockwise1 = false;
         }else {
-            doRotate = false;
+            doRotateHex = false;
         }
         
 
         ////Square
         //None needed
+        
         //// Hexagon
         if (keyboard.keyDownOnce(KeyEvent.VK_W)) {
             //up hex
-            shapeHex.move(1, 0);
+            if(shapeSq.location.x < SCREEN_W){
+            shapeHex.setLocation(new Point(1, 0));
+            }
         }
         if (keyboard.keyDownOnce(KeyEvent.VK_A)) {
             //left hex
-            shapeHex.move(0, -1);
+            if(shapeSq.location.x < SCREEN_W){
+            shapeHex.setLocation(new Point(0, -1));
+            }
         }
         if (keyboard.keyDownOnce(KeyEvent.VK_S)) {
             //down hex
-            shapeHex.move(-1, 0);
+            if(shapeSq.location.x < SCREEN_W){
+            shapeHex.setLocation(new Point(-1, 0));
+            }
         }
         if (keyboard.keyDownOnce(KeyEvent.VK_D)) {
             //right hex
-            shapeHex.move(0, 1);
+            if(shapeSq.location.x < SCREEN_W){
+            shapeHex.setLocation(new Point(0, 1));
+            }
         }
         if (keyboard.keyDownOnce(KeyEvent.VK_Q)) {
             //inq hex rotation
+            if(shapeSq.location.x < SCREEN_W){
             shapeHex.rotation++;
+            }
         }
         if (keyboard.keyDownOnce(KeyEvent.VK_E)) {
             //decrs hex rotation
+            if(shapeSq.location.x < SCREEN_W){
             shapeHex.rotation--;
+            }
         }
 
         if (keyboard.keyDown(KeyEvent.VK_SPACE)) {
@@ -224,19 +247,27 @@ public class VectorGraphic extends JFrame implements Runnable {
         }
         if (keyboard.keyDown(KeyEvent.VK_W)) {
             //up hex
-            shapeHex.move(1, 0);
+            if(shapeSq.location.x < SCREEN_W){
+            shapeHex.setLocation(new Point(1, 0));
+            }
         }
         if (keyboard.keyDown(KeyEvent.VK_A)) {
             //left hex
-            shapeHex.move(0, -1);
+            if(shapeSq.location.x < SCREEN_W){
+            shapeHex.setLocation(new Point(0, -1));
+            }
         }
         if (keyboard.keyDown(KeyEvent.VK_S)) {
             //down hex
-            shapeHex.move(-1, 0);
+            if(shapeSq.location.x < SCREEN_W){
+            shapeHex.setLocation(new Point(-1, 0));
+            }
         }
         if (keyboard.keyDown(KeyEvent.VK_D)) {
             //right hex
-            shapeHex.move(0, 1);
+            if(shapeSq.location.x < SCREEN_W){
+            shapeHex.setLocation(new Point(0, 1));
+            }
         }
         if (keyboard.keyDown(KeyEvent.VK_Q)) {
             //inq hex rotation
@@ -246,37 +277,55 @@ public class VectorGraphic extends JFrame implements Runnable {
             //decrs hex rotation
             shapeHex.rotation--;
         }
-        
-        
-        
     }
 
     private void processObjects() {
-        // copy data...    
-//        for (int i = 0; i < polygon.length; ++i) {
-//            world[i] = new Vector2f(polygon[i]);
-//        }
-        if (doRotate) {
+ 
+        if (doRotateTri) {
             rot += rotStep;
             if (rot < 0.0f || rot > 2 * Math.PI) {
                 rotStep = -rotStep;
             }
+            if(clockwise1){
+                shapeTri.setRotation(.02f);
+            }
+            else{
+                shapeTri.setRotation(-.02f);
+            }
+        }else{
+            shapeTri.setRotation(0);
         }
+        
+         if (doRotateHex) {
+            rot += rotStep;
+            if (rot < 0.0f || rot > 2 * Math.PI) {
+                rotStep = -rotStep;
+            }
+            if(clockwise2){
+                shapeHex.setRotation(.02f);
+            }
+            else{
+                shapeHex.setRotation(-.02f);
+            }
+        }
+        int check = (int) (100*shapeSq.scale/Math.sqrt(2.0f));
+        
         if (doTranslate) {
-            tx += vx;
-            if (tx < 0 || tx > SCREEN_W) {
-                vx = -vx;
+            if(shapeSq.location.x < check || shapeSq.location.y < check){
+                 vy = 1;
             }
-            ty += vy;
-            if (ty < 0 || ty > SCREEN_H) {
-                vy = -vy;
+            if(shapeSq.location.x > SCREEN_W|| shapeSq.location.y > SCREEN_H){
+                vy = -1; 
             }
+            
         }
-
-//        for (int i = 0; i < world.length; ++i) {
-//            world[i].rotate(rot);
-//            world[i].translate(tx, ty);
-//        }
+       // shapeTri.setLocation(new Point ((int)vx+shapeSq.location.x,(int)vy+shapeSq.location.y));
+         shapeTri.setLocation(new Point ((int)vy+shapeSq.location.x,(int)vy+shapeSq.location.y));
+       
+        //world
+        shapeTri.updateWorld();
+        shapeHex.updateWorld();
+        shapeSq.updateWorld();
     }
 
     private void render(Graphics g) {
