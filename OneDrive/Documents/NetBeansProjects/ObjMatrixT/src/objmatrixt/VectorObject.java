@@ -66,9 +66,7 @@ public class VectorObject implements Drawable{
         }
         g.drawLine((int)world.mul(lines[lines.length-1]).x, (int)world.mul(lines[lines.length-1]).y, 
             (int)world.mul(lines[0]).x, (int)world.mul(lines[0]).y);
-       
     }
-    
     
     public void setScreen(int h, int w){
         heightScreen = h;
@@ -91,6 +89,7 @@ public class VectorObject implements Drawable{
     
     public void setRotation(float rotation){
            this.rotation = rotation;
+           System.out.print("Rotation In:"+rotation+"=\n");
     }
     public void setScale(float scale){
         this.scale = scale;

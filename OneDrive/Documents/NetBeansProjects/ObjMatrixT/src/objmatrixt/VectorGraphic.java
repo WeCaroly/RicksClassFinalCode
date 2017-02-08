@@ -127,6 +127,7 @@ public class VectorGraphic extends JFrame implements Runnable {
         doTranslate = true; //starts bounce
         shapeTri = new VectorObject(1, GREEN);
         shapeHex = new VectorObject(2, BLUE);
+        shapeHex.setRotation(.2f);
 
         shapeSq.setLocation(new Point(SCREEN_W_HALF, SCREEN_H_HALF));
         shapeHex.setLocation(new Point(SCREEN_W_HALF, SCREEN_H_HALF));
@@ -144,7 +145,6 @@ public class VectorGraphic extends JFrame implements Runnable {
         vx = vy = 2;
         scale = 1.3f;
         doRotateTri = false;
-
     }
 
     private void processInput() {
@@ -207,24 +207,21 @@ public class VectorGraphic extends JFrame implements Runnable {
         if (keyboard.keyDownOnce(KeyEvent.VK_Q) || (keyboard.keyDown(KeyEvent.VK_Q))) {
             //inq hex rotation
             if (shapeHex.rotation < 5f) {
-                shapeHex.rotation++;
-                
-            System.out.println("ROTATION Q:" + shapeTri.rotation + "\n\n");
+                shapeHex.setRotation(shapeHex.rotation+.25f);
+                System.out.println("ROTATION Q:" + shapeHex.rotation + "\n\n");
             }
         }
         if (keyboard.keyDownOnce(KeyEvent.VK_E) ||(keyboard.keyDown(KeyEvent.VK_E))) {
             //decrs hex rotation
             if (shapeHex.rotation > -5f) {
-                shapeHex.rotation--;
-                
-            System.out.println("ROTATION E:" + shapeTri.rotation + "\n\n");
+                shapeHex.setRotation(shapeHex.rotation+-.25f);
+               System.out.println("ROTATION E:" + shapeHex.rotation + "\n\n");
             }
         }
         if (keyboard.keyDown(KeyEvent.VK_SPACE)) {
-            shapeTri.rotation = - shapeTri.rotation;
-          System.out.println("ROTATION E:" + shapeTri.rotation + "\n\n");
+            shapeHex.setRotation(-shapeHex.rotation);
+            System.out.println("ROTATION Space:" + shapeHex.rotation + "\n\n");
         }
-        
     }
 
     /**
