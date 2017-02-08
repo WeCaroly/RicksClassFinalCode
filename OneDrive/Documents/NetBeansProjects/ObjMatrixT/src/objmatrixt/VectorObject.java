@@ -34,9 +34,12 @@ public class VectorObject implements Drawable{
 				new Vector2f(0, 0) };
                 break;
             case 2: // hex
-                lines = new Vector2f[] { new Vector2f(0, 20), new Vector2f(0, 10),
-				new Vector2f(10, 0), new Vector2f(20, 10), 
-                                new Vector2f(20, 20), new Vector2f(10, 20) };
+                //a = 5
+                //b = 5
+                //c = 10
+                lines = new Vector2f[] { new Vector2f(0, 0), new Vector2f(0, 10),
+				new Vector2f(8, 16), new Vector2f(16, 10), 
+                                new Vector2f(16, 0), new Vector2f(8, -6) };
                 break;
             case 3: //square
                 lines = new Vector2f[] { new Vector2f(10, 0), new Vector2f(0, 10),
@@ -66,28 +69,14 @@ public class VectorObject implements Drawable{
         }
         g.drawLine((int)world.mul(lines[lines.length-1]).x, (int)world.mul(lines[lines.length-1]).y, 
             (int)world.mul(lines[0]).x, (int)world.mul(lines[0]).y);
-        
        
-//        g.drawLine(point.x + 10, point.y, point.x, point.y);
-//        g.drawLine(point.x, point.y + 10, point.x, point.y);
-//        g.drawLine(point.x, point.y, point.x - 10, point.y);
-//        g.drawLine(point.x, point.y, point.x, point.y - 10);
     }
     
-//    public void move(float x, float y){
-//        if(lines != null){
-//            if((x < widthScreen && x > widthScreenNeg)
-//                    &&(y < widthScreen && y > widthScreenNeg)){
-//                //TODO: CHECK CORRECTNESS
-//                for(int i = 0; i < lines.length;++i){
-//                    lines[i].translate(x, y);
-//                }
-//            } 
-//        }
+
+//    public void updatePoint(Point point){
+//        this.point = point;
 //    }
-    public void updatePoint(Point point){
-        this.point = point;
-    }
+    
     public void setScreen(int h, int w){
         heightScreen = h;
         widthScreen = w;
@@ -101,6 +90,7 @@ public class VectorObject implements Drawable{
     
     public void setLocation(Point location){
         this.location = location;
+        System.out.println(location);
     }
     
     public void setColor(Color color){
