@@ -179,7 +179,7 @@ public class VectorGraphic extends JFrame implements Runnable {
 
         ////////////////Tringle////////////////////// 
       
-      if(!(mouse.getPosition().x < 10 || mouse.getPosition().y < 20 || mouse.getPosition().y > SCREEN_H-2 || mouse.getPosition().x > SCREEN_W-10 )){
+      if(!(mouse.getPosition().x < 13 || mouse.getPosition().y < 20 || mouse.getPosition().y > SCREEN_H-12 || mouse.getPosition().x > SCREEN_W-12 )){
         shapeTri.setVectorLocation((float)mouse.getPosition().x, (float)mouse.getPosition().y);
        }
         if (mouse.buttonDownOnce(MouseEvent.BUTTON1)) {
@@ -209,7 +209,7 @@ public class VectorGraphic extends JFrame implements Runnable {
         }
         if (keyboard.keyDownOnce(KeyEvent.VK_A)|| keyboard.keyDown(KeyEvent.VK_A)) {
             //left hex
-            if (shapeHex.centerLocation.x > 5) {
+            if (shapeHex.centerLocation.x > 18) {
                    shapeHex.setVectorLocation(shapeHex.centerLocation.x - 1, shapeHex.centerLocation.y);
             }
         }
