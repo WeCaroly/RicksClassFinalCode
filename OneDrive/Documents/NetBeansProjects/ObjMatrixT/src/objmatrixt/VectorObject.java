@@ -18,9 +18,6 @@ public class VectorObject implements Drawable{
         Float scale;
         Color color;    
         float rotation;
-        //Added
-        int widthScreen, heightScreen;
-        int widthScreenNeg, heightScreenNeg;
 
     VectorObject(int i, Color color) {
         world = Matrix3x3f.identity();
@@ -28,14 +25,17 @@ public class VectorObject implements Drawable{
         setColor(color);
         switch(i){
             case 1: //tri
-                lines = new Vector2f[] { new Vector2f(-10, 0), new Vector2f(0, -10),
-				new Vector2f(10, 0) };
+                lines = new Vector2f[] { new Vector2f(0, 10), new Vector2f(10, -10),
+				new Vector2f(-10, -10) };
+                
                 break;
             case 2: // hex
-                lines = new Vector2f[] { new Vector2f(0, 0), new Vector2f(0, 10),
-				new Vector2f(8, 16), new Vector2f(16, 10), 
-                                new Vector2f(16, 0), new Vector2f(8, -6) };
-                
+               
+ lines = new Vector2f[]{new Vector2f(-10, 10), new Vector2f(10, 10)
+                                ,new Vector2f(15, 0), new Vector2f(10, -10)
+                                ,new Vector2f(-10, -10), new Vector2f(-15, 0)                                
+                                        };
+                rotation = .05f;
                                
                 break;
             case 3: //square
@@ -67,17 +67,7 @@ public class VectorObject implements Drawable{
         g.drawLine((int)world.mul(lines[lines.length-1]).x, (int)world.mul(lines[lines.length-1]).y, 
             (int)world.mul(lines[0]).x, (int)world.mul(lines[0]).y);
     }
-    
-    public void setScreen(int h, int w){
-        heightScreen = h;
-        widthScreen = w;
-        heightScreenNeg =  -h;
-        widthScreenNeg = -w;
-    }
-    
-    public void setWord(Matrix3x3f world){
-        this.world = world;
-    }
+ 
     
     public void setVectorLocation(float locationX, float locationY){
         centerLocation.x = locationX;

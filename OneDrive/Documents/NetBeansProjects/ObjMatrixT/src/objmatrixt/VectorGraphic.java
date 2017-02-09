@@ -67,7 +67,6 @@ public class VectorGraphic extends JFrame implements Runnable {
         keyboard = new KeyboardInput();
         canvas.addKeyListener(keyboard);
         // Add mouse listeners
-        // For full screen : mouse = new RelativeMouseInput( this );
         mouse = new RelativeMouseInput(canvas);
         canvas.addMouseListener(mouse);
         canvas.addMouseMotionListener(mouse);
