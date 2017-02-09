@@ -3,8 +3,6 @@ package objmatrixt;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Point;
-import static javafx.scene.paint.Color.color;
 import javagames.util.Matrix3x3f;
 import javagames.util.Vector2f;
 
@@ -16,44 +14,46 @@ import javagames.util.Vector2f;
 public class VectorObject implements Drawable{
 	public Vector2f[] lines;
         public Matrix3x3f world;
-        Point point = new Point(0,0);
-        Point location;
+        Vector2f centerLocation;
         Float scale;
         Color color;    
-        float rotation = 0.3f;
+        float rotation;
         //Added
         int widthScreen, heightScreen;
         int widthScreenNeg, heightScreenNeg;
 
     VectorObject(int i, Color color) {
         world = Matrix3x3f.identity();
+        centerLocation = new Vector2f();
         setColor(color);
         switch(i){
             case 1: //tri
-                lines = new Vector2f[] { new Vector2f(10, 0), new Vector2f(0, 10),
-				new Vector2f(0, 0) };
+                lines = new Vector2f[] { new Vector2f(-10, 0), new Vector2f(0, -10),
+				new Vector2f(10, 0) };
                 break;
             case 2: // hex
                 lines = new Vector2f[] { new Vector2f(0, 0), new Vector2f(0, 10),
 				new Vector2f(8, 16), new Vector2f(16, 10), 
                                 new Vector2f(16, 0), new Vector2f(8, -6) };
+                
+                               
                 break;
             case 3: //square
-                lines = new Vector2f[] { new Vector2f(10, 0), new Vector2f(0, 10),
-				new Vector2f(-10, 0), new Vector2f(0, -10) };
+                lines = new Vector2f[] { new Vector2f(-10, 10), new Vector2f(10, 10),
+				new Vector2f(10, -10), new Vector2f(-10, -10) };
                 break;
         }
      }
         
     @Override
     public void updateWorld() {
-        //multiplys the world matrix by the rotation value set
+              
+        
+       world = Matrix3x3f.scale(scale,scale);
+                  
         world = world.mul(Matrix3x3f.rotate(rotation));
-        //sclaes the world by the sale set 
-        world = Matrix3x3f.scale(scale,scale);
-        //translated vector to matrix obj
-        Matrix3x3f temp = Matrix3x3f.translate(new Vector2f(location.x,location.y));
-        world = world.mul(temp);
+        
+        world = world.mul(Matrix3x3f.translate(centerLocation));
     }
 
     @Override
@@ -71,16 +71,17 @@ public class VectorObject implements Drawable{
     public void setScreen(int h, int w){
         heightScreen = h;
         widthScreen = w;
-        heightScreenNeg =  h - (h+h);
-        widthScreenNeg = w - (w+w);
+        heightScreenNeg =  -h;
+        widthScreenNeg = -w;
     }
     
     public void setWord(Matrix3x3f world){
         this.world = world;
     }
     
-    public void setLocation(Point location){
-        this.location = location;
+    public void setVectorLocation(float locationX, float locationY){
+        centerLocation.x = locationX;
+        centerLocation.y = locationY;
     }
     
     public void setColor(Color color){
@@ -89,8 +90,8 @@ public class VectorObject implements Drawable{
     
     public void setRotation(float rotation){
            this.rotation = rotation;
-           System.out.print("Rotation In:"+rotation+"=\n");
     }
+    
     public void setScale(float scale){
         this.scale = scale;
     }
