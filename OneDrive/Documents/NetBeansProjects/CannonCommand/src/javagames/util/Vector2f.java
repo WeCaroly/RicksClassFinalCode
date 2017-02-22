@@ -10,7 +10,33 @@ public class Vector2f {
 		this.y = 0.0f;
 		this.w = 1.0f; // !?!
 	}
-
+        //inverse from ppt
+        public Vector2f inv(){
+            return new Vector2f(-x,-y);
+        }
+        //add from ppt, summation of two vectors 
+        public Vector2f add(Vector2f v){
+            return new Vector2f(x+v.x, y+v.y);
+        }
+        //subtract
+        public Vector2f sub(Vector2f v){
+            return new Vector2f(x-v.x, y-v.y);
+        }
+        // from ppt muli
+        public Vector2f mul(float scalar){
+            return new Vector2f(scalar * x, scalar * y);
+        }
+        // divide from ppt dont devide by zero 
+        public Vector2f div(float scalar){
+            return new Vector2f(x/scalar,y/scalar);
+        }
+        //from ppt get length by pythagrean theorem
+        public float len(){
+         return (float) Math.sqrt(x*x+y*y);   
+        }
+        
+        
+        
 	public Vector2f(Vector2f v) {
 		this.x = v.x;
 		this.y = v.y;
