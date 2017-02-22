@@ -34,8 +34,30 @@ public class Vector2f {
         public float len(){
          return (float) Math.sqrt(x*x+y*y);   
         }
-        
-        
+        //from ppt
+        public float lenSqr(){
+            return (x*x+y*y);
+        }
+        //from ppt
+        public Vector2f norm(){
+            return div(len());
+        }
+        //from ppt, purpendicular
+        public Vector2f prep(){
+            return new Vector2f(-y,x);
+        }
+        //from ppt, dot product
+        public float dot(Vector2f v){
+            return x*v.x + y*v.y;
+        }
+        // from ppt angle radians created by vector
+        public float angle(){
+            return (float) Math.atan2(y,x);
+        }
+        //from ppt, polar
+        public static Vector2f polar(float angle, float radius){
+            return new Vector2f(((float)radius*Math.cos(angle)),radius*(float)Math.sin(angle));
+        }
         
 	public Vector2f(Vector2f v) {
 		this.x = v.x;
