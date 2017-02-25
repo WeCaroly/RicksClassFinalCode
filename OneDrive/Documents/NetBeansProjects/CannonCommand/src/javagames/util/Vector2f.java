@@ -54,11 +54,7 @@ public class Vector2f {
         public float angle(){
             return (float) Math.atan2(y,x);
         }
-        //from ppt, polar
-        public static Vector2f polar(float angle, float radius){
-            return new Vector2f(((float)radius*Math.cos(angle)),radius*(float)Math.sin(angle));
-        }
-        
+  
 	public Vector2f(Vector2f v) {
 		this.x = v.x;
 		this.y = v.y;
