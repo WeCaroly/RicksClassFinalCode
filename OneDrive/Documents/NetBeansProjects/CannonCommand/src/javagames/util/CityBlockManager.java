@@ -16,6 +16,7 @@ import javagame.VectorObject;
  */
 public class CityBlockManager {
     public VectorObject city[];
+    int count = 21;
     
     public CityBlockManager(){
         city = new VectorObject[21];
@@ -24,6 +25,11 @@ public class CityBlockManager {
     
     public void removeBuilding(int i){
         city[i] = null;
+        count--;
+    }
+    
+    public int countCity(){
+        return count;
     }
     
     public void cityMaker(){

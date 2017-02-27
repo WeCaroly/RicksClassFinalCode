@@ -22,7 +22,7 @@ public class VectorObject{
         Color color;    
         float rotation;
         
-       
+        public float ty,tx;
         int width;
         int height;
 
@@ -30,22 +30,26 @@ public class VectorObject{
         world = Matrix3x3f.identity();
         centerLocation = new Vector2f();
         setColor(color);
+        tx=0;
+        ty=0;
         switch(i){
             case 1: //tri
                 lines = new Vector2f[] { new Vector2f(0, 10), new Vector2f(10, -10),
 				new Vector2f(-10, -10) };
-                
                 break;
             case 2: // hex   
-            lines = new Vector2f[] { new Vector2f(-10, 10), new Vector2f(10, 10),
-				new Vector2f(10, -10), new Vector2f(-10, -10) };
-             
+            lines = new Vector2f[]{new Vector2f(-5, 5), new Vector2f(5, 5)
+                                ,new Vector2f(7, 0), new Vector2f(5, -5)
+                                ,new Vector2f(-5, -5), new Vector2f(-7, 0)                                
+                                        };
+          
                 //drawPolygon();
                                
                 break;
             case 3: //square
                 lines = new Vector2f[] { new Vector2f(-10, 10), new Vector2f(10, 10),
 				new Vector2f(10, -10), new Vector2f(-10, -10) };
+             
                 break;
         
         case 4: 

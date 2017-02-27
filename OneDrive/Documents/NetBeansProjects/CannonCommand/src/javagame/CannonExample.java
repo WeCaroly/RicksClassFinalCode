@@ -24,9 +24,10 @@ public class CannonExample extends JFrame implements Runnable {
     private Point point = new Point(0, 0);
     private Random rand;
     private float windSpeed = 0, score = 0, blockMulti = 0;
-    private float tx, ty;
     private float vx, vy;
     private CityBlockManager city;
+    private boolean FirstStart = false,GameOver = false;
+ 
 
     private ArrayList<VectorObject> meteoroids;
 
@@ -87,18 +88,10 @@ public class CannonExample extends JFrame implements Runnable {
         rand = new Random();
         int random = 30;
         //no overlap on same point
-        for (int x = 0; x < meteoroids.size(); x++) {
-            random = rand.nextInt(SCREEN_W);
-            while (random <= meteoroids.get(x).centerLocation.x + 15 && random >= meteoroids.get(x).centerLocation.x - 15) {
-                random = rand.nextInt(SCREEN_W);
-            }
-        }
-
+            random = rand.nextInt(SCREEN_W);       
         //when box is clicked add 10 to score
         vec.setVectorLocation(random, -25);
-        meteoroids.add(vec);
-        tx = 0;
-        ty = 0;
+        meteoroids.add(vec);        
         vx = vy = 2;
 
         startGame = false;
@@ -107,6 +100,7 @@ public class CannonExample extends JFrame implements Runnable {
     private void gameLoop(double delta) {
         processInput(delta);
         if (startGame) {
+            FirstStart = true;
             updateObjects(delta);
         }
         renderFrame();
@@ -120,7 +114,7 @@ public class CannonExample extends JFrame implements Runnable {
                 try {
                     g = bs.getDrawGraphics();
                     g.clearRect(0, 0, getWidth(), getHeight());
-                    render(g);
+                        render(g);
                 } finally {
                     if (g != null) {
                         g.dispose();
@@ -147,6 +141,7 @@ public class CannonExample extends JFrame implements Runnable {
         if (keyboard.keyDownOnce(KeyEvent.VK_SPACE)) {
             startGame = true;
         }
+        
          if (mouse.buttonDownOnce(MouseEvent.BUTTON1)) {
              //call check meteor
             for (int i = 0; i < meteoroids.size(); i++)
@@ -162,46 +157,49 @@ public class CannonExample extends JFrame implements Runnable {
                         score+=10;
                     }
                 }
-            }
-            //point 
-         }
+            }//end of for 
+         }//end of if
         
-
     }
 
     private void updateObjects(double delta) {
         Matrix3x3f mat = Matrix3x3f.identity();
-        windSpeed = score / 100;
+        windSpeed = score / 1000;
+        if(windSpeed > 1){
+            windSpeed = 1;
+        }
 
         city.updateWorld();
         //block multiplier
         blockMulti = city.countCity();
-        //update boxes.
+        //max windSpeed set
+        if(blockMulti == 0){
+            GameOver = true;
+        }
         rand = new Random(15);
 
         //add position  
         //do same as score but remember that this number must be small or it will fly out of control
         //6 should be like max speed this ever gets
-        tx += 0; // add wind
-
+         for (int i = 0; i < meteoroids.size(); i++) {
+        meteoroids.get(i).ty += (score / 10000);
+         }
         //CANT HAPPEN EVERY FRAME, only update if game is on
         //This goees from 0 speed to 30 speed in 3 seconds
         //only increase speed when a meteor is destoryed or if the score is set to something
         //make it like speed 1 at start then after killing 3 its 2 and then after 8 its 3 or something
         for (int i = 0; i < meteoroids.size(); i++) {
             if (meteoroids.get(i) != null) {
-                //double random;
-                //random = ((double)rand.nextDouble()%.01);
-                ty += .001F; //TODO: add score
-                meteoroids.get(i).setVectorLocation(meteoroids.get(i).centerLocation.x, meteoroids.get(i).centerLocation.y + ty);
+                 meteoroids.get(i).ty += .001F; //TODO: add score
+                meteoroids.get(i).setVectorLocation(meteoroids.get(i).centerLocation.x + windSpeed, meteoroids.get(i).centerLocation.y + meteoroids.get(i).ty);
                 //Rendering in cycle or death   
                 if (meteoroids.get(i).centerLocation.y > SCREEN_H + 25) {
-                    ty = 0;
+                     meteoroids.get(i).ty = .0001F;
                 }
                 meteoroids.get(i).updateWorld();
             } else {
                 //if at death create new
-                ty = 0;
+                 meteoroids.get(i).ty = 0;
                 VectorObject vec = new VectorObject(2, BLACK);
                 rand = new Random();
                 int random = rand.nextInt(SCREEN_W);
@@ -215,16 +213,19 @@ public class CannonExample extends JFrame implements Runnable {
             }
         }
 
-        //add randpm if it is made? 
-        if ((meteoroids.size() < 5 && score % 30 == 0 && score != 0)) {
+        //add random if it is made.
+        if (meteoroids.size() < 5){ //&& score % 30 == 0 && score != 0) {
 
             rand = new Random();
             int random = rand.nextInt(SCREEN_W);
             int delay = -25;
             for (int x = 0; x < meteoroids.size(); x++) {
+                
                 while (random <= meteoroids.get(x).centerLocation.x + 30 && random >= meteoroids.get(x).centerLocation.x - 30) {
                     random += 30;
-                    x--;
+                    if(x!=0){
+                         x--;
+                    }
                 }
             }
 
@@ -243,15 +244,17 @@ public class CannonExample extends JFrame implements Runnable {
      * @params Graphics g
      */
     private void renderBoard(Graphics g) {
-        g.setColor(Color.BLACK);
+       
         String windSpeedBoard = String.format("Wind Speed : %.02f", windSpeed);
         String scoreBoard = String.format("Score: %.02f", score);
         String blockMultiBoard = String.format("Block Multi : %.0f", blockMulti);
 
-        g.setColor(Color.GREEN);
+        
         if (!startGame) {
+            g.setColor(Color.GREEN);
             g.drawString("Press Space to start", 20, 70);
         }
+         g.setColor(Color.BLACK);
         g.drawString(windSpeedBoard, 20, 30);
         g.drawString(blockMultiBoard, 20, 45);
         g.drawString(scoreBoard, 20, 10);
@@ -260,7 +263,7 @@ public class CannonExample extends JFrame implements Runnable {
 
     private void render(Graphics g) {
         renderBoard(g);
-
+         g.setColor(Color.RED);
         g.drawLine(point.x + 10, point.y, point.x, point.y);
         g.drawLine(point.x, point.y + 10, point.x, point.y);
         g.drawLine(point.x, point.y, point.x - 10, point.y);
@@ -272,6 +275,10 @@ public class CannonExample extends JFrame implements Runnable {
             }
         }
         city.render(g);
+         if(blockMulti == 0 && FirstStart){
+            GameOver(g);
+            //reset
+        }
     }
 
     public void onWindowClosing() {
@@ -295,5 +302,14 @@ public class CannonExample extends JFrame implements Runnable {
         Cursor cursor = tk.createCustomCursor(image, points, name);
         setCursor(cursor);
 
+    }
+
+    private void GameOver(Graphics g) {
+        startGame = false;
+        g.setColor(Color.RED);
+        g.drawString("Game Over.",200,300);
+        initialize();
+        score = 0;
+        windSpeed = 0;
     }
 }
