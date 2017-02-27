@@ -23,7 +23,7 @@ public class CannonExample extends JFrame implements Runnable {
     private Canvas canvas;
     private Point point = new Point(0, 0);
     private Random rand;
-    private int windSpeed = 0, score = 0, blockMulti = 0;
+    private float windSpeed = 0, score = 0, blockMulti = 0;
     private float tx, ty;
     private float vx, vy;
     private CityBlockManager city;
@@ -74,6 +74,7 @@ public class CannonExample extends JFrame implements Runnable {
     }
 
     private void initialize() {
+        disableCursor();
         city = new CityBlockManager();
         city.cityMaker();
         frameRate = new FrameRate();
@@ -146,15 +147,35 @@ public class CannonExample extends JFrame implements Runnable {
         if (keyboard.keyDownOnce(KeyEvent.VK_SPACE)) {
             startGame = true;
         }
+         if (mouse.buttonDownOnce(MouseEvent.BUTTON1)) {
+             //call check meteor
+            for (int i = 0; i < meteoroids.size(); i++)
+            {
+                if (meteoroids.get(i) != null)
+                {
+                    if (point.x >= meteoroids.get(i).centerLocation.x - 10 
+                            && point.x <= meteoroids.get(i).centerLocation.x + 10
+                            && point.y >= meteoroids.get(i).centerLocation.y - 10
+                            && point.y <= meteoroids.get(i).centerLocation.y + 10)
+                    {
+                        meteoroids.remove(i);
+                        score+=10;
+                    }
+                }
+            }
+            //point 
+         }
+        
 
     }
 
     private void updateObjects(double delta) {
         Matrix3x3f mat = Matrix3x3f.identity();
-        //windspeed, score / 100
+        windSpeed = score / 100;
 
         city.updateWorld();
         //block multiplier
+        blockMulti = city.countCity();
         //update boxes.
         rand = new Random(15);
 
@@ -223,9 +244,9 @@ public class CannonExample extends JFrame implements Runnable {
      */
     private void renderBoard(Graphics g) {
         g.setColor(Color.BLACK);
-        String windSpeedBoard = String.format("Wind Speed : %d", windSpeed);
-        String scoreBoard = String.format("Score: %d", score);
-        String blockMultiBoard = String.format("Block Multi : %d", blockMulti);
+        String windSpeedBoard = String.format("Wind Speed : %.02f", windSpeed);
+        String scoreBoard = String.format("Score: %.02f", score);
+        String blockMultiBoard = String.format("Block Multi : %.0f", blockMulti);
 
         g.setColor(Color.GREEN);
         if (!startGame) {
@@ -261,5 +282,18 @@ public class CannonExample extends JFrame implements Runnable {
             e.printStackTrace();
         }
         System.exit(0);
+    }
+    
+    /**
+     * From Book unedited
+     */
+    private void disableCursor() {
+        Toolkit tk = Toolkit.getDefaultToolkit();
+        Image image = tk.createImage("");
+        Point points = new Point(0, 0);
+        String name = "Pointer";
+        Cursor cursor = tk.createCustomCursor(image, points, name);
+        setCursor(cursor);
+
     }
 }
