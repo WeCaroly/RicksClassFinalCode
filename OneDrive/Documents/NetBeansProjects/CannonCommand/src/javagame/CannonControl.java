@@ -2,6 +2,7 @@ package javagames.timeandspace;
 
 import java.awt.*;
 import static java.awt.Color.BLACK;
+import static java.awt.Color.WHITE;
 import java.awt.event.*;
 import java.awt.image.*;
 import java.util.ArrayList;
@@ -28,7 +29,20 @@ public class CannonControl extends JFrame implements Runnable {
     private CityBlockManager city;
     private boolean FirstStart = false,GameOver = false;
     private int totalMeteor;
- 
+ ////
+    	protected Color appBackground = Color.WHITE;
+	protected Color appBorder = Color.LIGHT_GRAY;
+	protected Color appFPSColor = Color.GREEN;
+	protected Font appFont = new Font("Courier New", Font.PLAIN, 14);
+	protected String appTitle = "TBD-Title";
+	protected float appBorderScale = 0.8f;
+	protected int appWidth = 1280;
+	protected int appHeight = 750;
+	protected float appWorldWidth = 2.0f;
+	protected float appWorldHeight = 2.0f;
+	protected long appSleep = 10L;
+	protected boolean appMaintainRatio = true;
+    ////
 
     private ArrayList<VectorObject> meteoroids;
 
@@ -39,8 +53,8 @@ public class CannonControl extends JFrame implements Runnable {
 
     public void createAndShowGUI() {
         canvas = new Canvas();
-        canvas.setSize(SCREEN_W, SCREEN_H);
-        canvas.setBackground(Color.WHITE);
+        canvas.setSize((int)appWidth, (int)appHeight);
+        canvas.setBackground(appBackground);
         canvas.setIgnoreRepaint(true);
         getContentPane().add(canvas);
         setTitle("Cannon Example");
@@ -58,6 +72,21 @@ public class CannonControl extends JFrame implements Runnable {
         canvas.requestFocus();
         gameThread = new Thread(this);
         gameThread.start();
+        
+        if (true) {
+			getContentPane().setBackground(appBorder);
+			setSize(appWidth, appHeight);
+			setLayout(null);
+			getContentPane().addComponentListener(new ComponentAdapter() {
+				public void componentResized(ComponentEvent e) {
+					onComponentResized(e);
+				}
+			});
+		} else {
+			canvas.setSize(appWidth, appHeight);
+			pack();
+		}
+        
     }
 
     public void run() {
@@ -88,9 +117,9 @@ public class CannonControl extends JFrame implements Runnable {
         meteoroids = new ArrayList<VectorObject>();
         VectorObject vec = new VectorObject(2, BLACK);
         rand = new Random();
-        int random = 30;
-        //no overlap on same point
-            random = rand.nextInt(SCREEN_W);       
+        int random;
+        random = rand.nextInt(SCREEN_W); 
+        
         //when box is clicked add 10 to score
         vec.setVectorLocation(random, -25);
         meteoroids.add(vec);        
@@ -208,10 +237,19 @@ public class CannonControl extends JFrame implements Runnable {
                  meteoroids.get(i).ty = 0;
                 VectorObject vec = new VectorObject(2, BLACK);
                 rand = new Random();
-                int random = rand.nextInt(SCREEN_W);
+                int random;
+
+               
+                random = rand.nextInt(SCREEN_W);
+                
                 for (int x = 0; x < meteoroids.size(); x++) {
                     while (random <= meteoroids.get(x).centerLocation.x + 30 && random >= meteoroids.get(x).centerLocation.x - 30) {
-                        random = rand.nextInt(SCREEN_W);
+                       if(appWorldWidth>0){
+                             random = rand.nextInt((int)appWorldWidth);
+                         }
+                         else{
+                             random = rand.nextInt(SCREEN_W);
+                         }
                     }
                 }
                 vec.setVectorLocation(random, -25);
@@ -223,7 +261,10 @@ public class CannonControl extends JFrame implements Runnable {
         if (meteoroids.size() < totalMeteor){ //&& score % 30 == 0 && score != 0) {
 
             rand = new Random();
-            int random = rand.nextInt(SCREEN_W);
+            int random;
+             
+                random = rand.nextInt(SCREEN_W);
+              
             int delay = -25;
             for (int x = 0; x < meteoroids.size(); x++) {
                 
@@ -318,4 +359,36 @@ public class CannonControl extends JFrame implements Runnable {
         score = 0;
         windSpeed = 0;
     }
+    
+    
+    
+    
+	protected void onComponentResized(ComponentEvent e) {
+		Dimension size = getContentPane().getSize();
+		int vw = (int) (size.width * appBorderScale);
+		int vh = (int) (size.height * appBorderScale);
+		int vx = (size.width - vw) / 2;
+		int vy = (size.height - vh) / 2;
+		int newW = vw;
+		int newH = (int) (vw * appWorldHeight / appWorldWidth);
+		if (newH > vh) {
+			newW = (int) (vh * appWorldWidth / appWorldHeight);
+			newH = vh;
+		}
+		// center
+		vx += (vw - newW) / 2;
+		vy += (vh - newH) / 2;
+		canvas.setLocation(vx, vy);
+		canvas.setSize(newW, newH);
+	}
+
+	protected Matrix3x3f getViewportTransform() {
+		return Utility.createViewport(appWorldWidth, appWorldHeight,
+				canvas.getWidth(), canvas.getHeight());
+	}
+
+	protected Matrix3x3f getReverseViewportTransform() {
+		return Utility.createReverseViewport(appWorldWidth, appWorldHeight,
+				canvas.getWidth(), canvas.getHeight());
+	}
 }
