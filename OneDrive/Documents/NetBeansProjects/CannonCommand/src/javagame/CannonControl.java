@@ -10,7 +10,7 @@ import javagame.VectorObject;
 import javagames.util.*;
 import javax.swing.*;
 
-public class CannonExample extends JFrame implements Runnable {
+public class CannonControl extends JFrame implements Runnable {
 
     private static final int SCREEN_W = 1280;
     private static final int SCREEN_H = 720;
@@ -27,13 +27,14 @@ public class CannonExample extends JFrame implements Runnable {
     private float vx, vy;
     private CityBlockManager city;
     private boolean FirstStart = false,GameOver = false;
+    private int totalMeteor;
  
 
     private ArrayList<VectorObject> meteoroids;
 
     boolean startGame;
 
-    public CannonExample() {
+    public CannonControl() {
     }
 
     public void createAndShowGUI() {
@@ -83,6 +84,7 @@ public class CannonExample extends JFrame implements Runnable {
         score = 0;
         windSpeed = 0;
         blockMulti = 0;
+        totalMeteor = 1;
         meteoroids = new ArrayList<VectorObject>();
         VectorObject vec = new VectorObject(2, BLACK);
         rand = new Random();
@@ -155,6 +157,10 @@ public class CannonExample extends JFrame implements Runnable {
                     {
                         meteoroids.remove(i);
                         score+=10;
+                        if (score % 40 == 0)
+                        {
+                            totalMeteor++;
+                        }
                     }
                 }
             }//end of for 
@@ -214,7 +220,7 @@ public class CannonExample extends JFrame implements Runnable {
         }
 
         //add random if it is made.
-        if (meteoroids.size() < 5){ //&& score % 30 == 0 && score != 0) {
+        if (meteoroids.size() < totalMeteor){ //&& score % 30 == 0 && score != 0) {
 
             rand = new Random();
             int random = rand.nextInt(SCREEN_W);

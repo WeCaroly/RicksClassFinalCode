@@ -7,7 +7,7 @@ package cannoncommand;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javagames.timeandspace.CannonExample;
+import javagames.timeandspace.CannonControl;
 import javax.swing.SwingUtilities;
 import javagames.util.*;
 import javagame.*;
@@ -22,7 +22,7 @@ public class CannonCommand {
      * @param args the command line arguments
      */
    public static void main(String[] args) {
-		final CannonExample app = new CannonExample();
+		final CannonControl app = new CannonControl();
 		app.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				app.onWindowClosing();
