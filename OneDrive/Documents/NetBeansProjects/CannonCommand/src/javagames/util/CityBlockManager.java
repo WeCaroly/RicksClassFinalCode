@@ -17,10 +17,11 @@ import javagame.VectorObject;
 public class CityBlockManager {
     public VectorObject city[];
     
-    int maxh = 560;
+    int maxh = 718;
+    int maxw = 1280;
     int count;
     public CityBlockManager(){
-        count = maxh/60;
+        count = maxw/60;
         
         city = new VectorObject[count];
         cityMaker();

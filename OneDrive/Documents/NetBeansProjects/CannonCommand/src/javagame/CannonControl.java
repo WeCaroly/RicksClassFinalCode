@@ -2,7 +2,6 @@ package javagames.timeandspace;
 
 import java.awt.*;
 import static java.awt.Color.BLACK;
-import static java.awt.Color.WHITE;
 import java.awt.event.*;
 import java.awt.image.*;
 import java.util.ArrayList;
@@ -30,18 +29,18 @@ public class CannonControl extends JFrame implements Runnable {
     private boolean FirstStart = false,GameOver = false;
     private int totalMeteor;
  ////
-    	protected Color appBackground = Color.WHITE;
+    	protected Color appBackground = Color.BLACK;
 	protected Color appBorder = Color.LIGHT_GRAY;
 	protected Color appFPSColor = Color.GREEN;
 	protected Font appFont = new Font("Courier New", Font.PLAIN, 14);
 	protected String appTitle = "TBD-Title";
 	protected float appBorderScale = 0.8f;
-	protected int appWidth = 1280;
-	protected int appHeight = 750;
+	protected int appWidth = 1270;
+	protected int appHeight = 720;
 	protected float appWorldWidth = 2.0f;
 	protected float appWorldHeight = 2.0f;
 	protected long appSleep = 10L;
-	protected boolean appMaintainRatio = true;
+	protected boolean appMaintainRatio = false;
     ////
 
     private ArrayList<VectorObject> meteoroids;
@@ -53,8 +52,10 @@ public class CannonControl extends JFrame implements Runnable {
 
     public void createAndShowGUI() {
         canvas = new Canvas();
-        canvas.setSize((int)appWidth, (int)appHeight);
+        canvas.setSize(SCREEN_W, SCREEN_H);
         canvas.setBackground(appBackground);
+		
+        canvas.setBackground(Color.WHITE);
         canvas.setIgnoreRepaint(true);
         getContentPane().add(canvas);
         setTitle("Cannon Example");
@@ -73,7 +74,7 @@ public class CannonControl extends JFrame implements Runnable {
         gameThread = new Thread(this);
         gameThread.start();
         
-        if (true) {
+        if (appMaintainRatio) {
 			getContentPane().setBackground(appBorder);
 			setSize(appWidth, appHeight);
 			setLayout(null);
@@ -117,9 +118,9 @@ public class CannonControl extends JFrame implements Runnable {
         meteoroids = new ArrayList<VectorObject>();
         VectorObject vec = new VectorObject(2, BLACK);
         rand = new Random();
-        int random;
-        random = rand.nextInt(SCREEN_W); 
-        
+        int random = 30;
+        //no overlap on same point
+            random = rand.nextInt(SCREEN_W);       
         //when box is clicked add 10 to score
         vec.setVectorLocation(random, -25);
         meteoroids.add(vec);        
@@ -186,7 +187,7 @@ public class CannonControl extends JFrame implements Runnable {
                     {
                         meteoroids.remove(i);
                         score+=10;
-                        if (score % 40 == 0)
+                        if (score % 30 == 0)
                         {
                             totalMeteor++;
                         }
@@ -213,19 +214,13 @@ public class CannonControl extends JFrame implements Runnable {
         }
         rand = new Random(15);
 
-        //add position  
-        //do same as score but remember that this number must be small or it will fly out of control
-        //6 should be like max speed this ever gets
          for (int i = 0; i < meteoroids.size(); i++) {
-        meteoroids.get(i).ty += (score / 10000);
+             meteoroids.get(i).ty += (score / 10000);
          }
-        //CANT HAPPEN EVERY FRAME, only update if game is on
-        //This goees from 0 speed to 30 speed in 3 seconds
-        //only increase speed when a meteor is destoryed or if the score is set to something
-        //make it like speed 1 at start then after killing 3 its 2 and then after 8 its 3 or something
-        for (int i = 0; i < meteoroids.size(); i++) {
+     
+         for (int i = 0; i < meteoroids.size(); i++) {
             if (meteoroids.get(i) != null) {
-                 meteoroids.get(i).ty += .001F; //TODO: add score
+                 meteoroids.get(i).ty += .001F; 
                 meteoroids.get(i).setVectorLocation(meteoroids.get(i).centerLocation.x + windSpeed, meteoroids.get(i).centerLocation.y + meteoroids.get(i).ty);
                 //Rendering in cycle or death   
                 if (meteoroids.get(i).centerLocation.y > SCREEN_H + 25) {
@@ -237,19 +232,10 @@ public class CannonControl extends JFrame implements Runnable {
                  meteoroids.get(i).ty = 0;
                 VectorObject vec = new VectorObject(2, BLACK);
                 rand = new Random();
-                int random;
-
-               
-                random = rand.nextInt(SCREEN_W);
-                
+                int random = rand.nextInt(SCREEN_W);
                 for (int x = 0; x < meteoroids.size(); x++) {
                     while (random <= meteoroids.get(x).centerLocation.x + 30 && random >= meteoroids.get(x).centerLocation.x - 30) {
-                       if(appWorldWidth>0){
-                             random = rand.nextInt((int)appWorldWidth);
-                         }
-                         else{
-                             random = rand.nextInt(SCREEN_W);
-                         }
+                        random = rand.nextInt(SCREEN_W);
                     }
                 }
                 vec.setVectorLocation(random, -25);
@@ -261,10 +247,7 @@ public class CannonControl extends JFrame implements Runnable {
         if (meteoroids.size() < totalMeteor){ //&& score % 30 == 0 && score != 0) {
 
             rand = new Random();
-            int random;
-             
-                random = rand.nextInt(SCREEN_W);
-              
+            int random = rand.nextInt(SCREEN_W);
             int delay = -25;
             for (int x = 0; x < meteoroids.size(); x++) {
                 
@@ -359,9 +342,6 @@ public class CannonControl extends JFrame implements Runnable {
         score = 0;
         windSpeed = 0;
     }
-    
-    
-    
     
 	protected void onComponentResized(ComponentEvent e) {
 		Dimension size = getContentPane().getSize();
