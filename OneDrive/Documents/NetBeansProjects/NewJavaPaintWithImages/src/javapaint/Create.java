@@ -26,9 +26,11 @@ import javafx.scene.image.ImageView;
 
 import java.io.File;
 import java.io.IOException;
+import javafx.embed.swing.SwingFXUtils;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JFileChooser;
+
 
 /**
  * Create Controls the paint application
@@ -40,9 +42,8 @@ public class Create extends JFrame implements Runnable {
     static MyImageNew outputImageJfx; // javafx
     static Image inputImageJfx; // javaFx
     
-    static   BufferedImage imagefile;
-    static   BufferedImage imagefileout;
-    
+    public Image imagefile;
+    public Image imagefileout =  new Image("C:/Users/carol_8wybosj/OneDrive/Documents/NetBeansProjects/JavaPaint/src/javapaint/Images/CurvInUse.png");
     
     static java.util.List<MyImageNew> undoStack = new ArrayList<MyImageNew>();
     static java.util.List<MyImageNew> redoStack = new ArrayList<MyImageNew>();
@@ -65,7 +66,7 @@ public class Create extends JFrame implements Runnable {
             right = r;
         }
     }
-
+    private Boolean upload = false;
     private final FrameRate frameRate;
     private BufferStrategy bs;
     private volatile boolean running;
@@ -91,18 +92,18 @@ public class Create extends JFrame implements Runnable {
     JButton rectangleBrush; //4 code
     Point strRec, endRec, str, end;
     JButton RedB, GreenB, BlueB, BlackB;
-  //added
+    //added
     JButton uploadFile, ReduceColor, Blur, Magic, edgeDetector, Sharpen;
     JPanel pannelTool;
     Box buttonHolder;
-  ///////////////
+    ///////////////
     boolean mouseDown = false;
     private String[] description;
     private final Color[] COLORS = {Color.RED, Color.GREEN, Color.BLUE, Color.BLACK};
     private int colorIndex = 4;
     ///////////////////////////
     private MoreKernels mk;
-    
+
     /**
      * Set Up of the create object
      */
@@ -113,10 +114,11 @@ public class Create extends JFrame implements Runnable {
         buttonHolder = Box.createVerticalBox();
         mk = new MoreKernels();
         
+       
+        
         //ImageView inputImageJfx; 
         //outputImageJfx = new MyImageNew((int) inputImageJfx.getWidth(), (int) inputImageJfx.getHeight());;
         //outputImageJfx.copyFrom(inputImageJfx);
-
         freeBrush = setButton("C:/Users/carol_8wybosj/OneDrive/Documents/NetBeansProjects/JavaPaint/src/javapaint/Images/CurvInUse.png");
         lineBrush = setButton("C:/Users/carol_8wybosj/OneDrive/Documents/NetBeansProjects/JavaPaint/src/javapaint/Images/LineNotInUse.png");
         polyLine = setButton("C:/Users/carol_8wybosj/OneDrive/Documents/NetBeansProjects/JavaPaint/src/javapaint/Images/PolyLineNotInUse.png");
@@ -136,21 +138,20 @@ public class Create extends JFrame implements Runnable {
         Sharpen = new JButton("Sharpen");
 
         buttonHolder.add(freeBrush);
-        buttonHolder.add(lineBrush);
-        buttonHolder.add(polyLine);
+//        buttonHolder.add(lineBrush);
+//        buttonHolder.add(polyLine);
         buttonHolder.add(rectangleBrush);
 
-        buttonHolder.add(RedB);
-        buttonHolder.add(GreenB);
-        buttonHolder.add(BlueB);
-        buttonHolder.add(BlackB);
-
+//        buttonHolder.add(RedB);
+//        buttonHolder.add(GreenB);
+//        buttonHolder.add(BlueB);
+//        buttonHolder.add(BlackB);
         buttonHolder.add(uploadFile);
-        buttonHolder.add(ReduceColor);
-        buttonHolder.add(Blur);
-        buttonHolder.add(Magic);
-        buttonHolder.add(edgeDetector);
-        buttonHolder.add(Sharpen);
+//        buttonHolder.add(ReduceColor);
+//        buttonHolder.add(Blur);
+//        buttonHolder.add(Magic);
+//        buttonHolder.add(edgeDetector);
+//        buttonHolder.add(Sharpen);
 
         pannelTool.add(buttonHolder);
 
@@ -207,6 +208,7 @@ public class Create extends JFrame implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Object source = e.getSource();
+                System.out.println("Event" + e.getSource());
                 if (source == freeBrush) {
                     actionCode = 1;
                     str = null;
@@ -228,39 +230,9 @@ public class Create extends JFrame implements Runnable {
                     str = null;
                     changeIcon(actionCode);
                 } else if (source == uploadFile) {
-                    //open file explorer                     
-                    JFileChooser fileChooser = new JFileChooser();
-                    int returnValue = fileChooser.showDialog(null, "Attach");
-                    File selectedFile= new File("");
-                    if (returnValue == JFileChooser.APPROVE_OPTION) {
-                        selectedFile = fileChooser.getSelectedFile();
-                        System.out.println("Attaching file: " + selectedFile);
+                    upload = true;
+                }
 
-                    }
-                    try {
-                        //inputImageJfx = new javafx.scene.image.Image(new FileInputStream(selectedFile));
-                        //check image
-                        imagefile = ImageIO.read(selectedFile);
-                        imagefileout = imagefile; 
-                        //myImage = java.awt.Image.load(); // file input stream gives awt
-                        
-//                         inputImageJfx = new Image(new FileInputStream(selectedFile));
-//                         outputImageJfx = new MyImageNew((int) inputImageJfx.getWidth(), (int) inputImageJfx.getHeight());
-//                         outputImageJfx.copyFrom(inputImageJfx);
-                        
-                    } catch (FileNotFoundException ex) {
-                        Logger.getLogger(Create.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IOException ex) {
-                        Logger.getLogger(Create.class.getName()).log(Level.SEVERE, null, ex);
-                    }
- 
-//                   inputImageJfx = new Image(new FileInputStream(selectedFile));
-//                   outputImageJfx = new MyImageNew((int) inputImageJfx.getWidth(), (int) inputImageJfx.getHeight());
-//                   outputImageJfx.copyFrom(inputImageJfx);
-//                    
-                    //upload
-                }              
-                
             }
 
             public void mouseReleased(MouseEvent e) {
@@ -425,6 +397,24 @@ public class Create extends JFrame implements Runnable {
      * From Book edited for other types of tools
      */
     private void processInput() {
+
+        if (upload) {         
+                    System.out.println("hit");
+                    JFileChooser fileChooser = new JFileChooser();
+                    int returnValue = fileChooser.showDialog(null, "Attach");
+                    File file = fileChooser.getSelectedFile();
+                    if (returnValue == JFileChooser.APPROVE_OPTION) {
+                       //imagefile = new BufferedImage(file);
+                       imagefileout = new Image(file.getName()); 
+                       System.out.println("Attaching file: " + imagefile.toString());
+                    }
+            
+            //imagefile = new BufferedImageLoader("javapaint/Images/what.jpg");
+            imagefileout = imagefile;
+
+            upload = false;
+        }
+
         keyboard.poll();
         mouse.poll();
         Graphics g = bs.getDrawGraphics();
@@ -543,10 +533,14 @@ public class Create extends JFrame implements Runnable {
 
         //add image
         //TODO: FIX
-        //g.drawImage(inputImageJfx, inputImageJfx.getWidth(), inputImageJfx.getHeight(), BlueB);
-       // ImageView outputImageView = new ImageView(outputImageJfx);
-       ImageView outputImageView;
-        outputImageView = new ImageView(imagefileout.toString());
+       // g.drawImage(imagefile, imagefile.getWidth(), imagefile.getHeight(), null);  
+       BufferedImage Bimagefileout = null;
+        Bimagefileout = SwingFXUtils.fromFXImage(imagefileout, null);
+       //def as: SwingFXUtils.fromFXImage(imagefile, Bimagefileout)
+       g.drawImage(Bimagefileout, Bimagefileout.getWidth(), Bimagefileout.getHeight(), null);
+    
+        // ImageView outputImageView = new ImageView(outputImageJfx);      
+       
         frameRate.calculate();
         g.drawLine(point.x + 10, point.y, point.x, point.y);
         g.drawLine(point.x, point.y + 10, point.x, point.y);
@@ -563,14 +557,7 @@ public class Create extends JFrame implements Runnable {
         fDraw.AddLines(g);
         lDraw.AddShapes(g);
         rDraw.AddShapes(g);
-     
-        g.drawImage(imagefileout, imagefileout.getWidth(), imagefileout.getHeight(), null);
-        
-        //g.drawImage(inputImageJfx, inputImageJfx.getHeight(), inputImageJfx.getWidth(),null);
-       // outputImageView = new ImageView(outputImageJfx);
-        
-        //group.getChildren().add(canvas);
-      
+       
     }
 
     /**
@@ -638,8 +625,7 @@ public class Create extends JFrame implements Runnable {
     }
 }
 /**
- * try {
-  Image img = ImageIO.read(getClass().getResource("resources/water.bmp"));
-  button.setIcon(new ImageIcon(img));
-} catch (IOException ex) {
+ * try { Image img =
+ * ImageIO.read(getClass().getResource("resources/water.bmp"));
+ * button.setIcon(new ImageIcon(img)); } catch (IOException ex) {
  */
